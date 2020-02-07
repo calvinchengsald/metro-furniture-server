@@ -8,39 +8,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
-import com.metro.model.EdgeOption;
+import com.metro.model.SeatOption;
 
 @Repository
-public class EdgeOptionRepository {
+public class SeatOptionRepository {
 
 	
 	@Autowired
 	private DynamoDBMapper mapper;
 	
-	public void insert(EdgeOption p) {
+	public void insert(SeatOption p) {
 		mapper.save(p);
 	}
 	
-	public EdgeOption getOneByEdge(String edge) {
-		return mapper.load(EdgeOption.class, edge);
+	public SeatOption getOneBySeat(String edge) {
+		return mapper.load(SeatOption.class, edge);
 	}
 	
 
-	public List<EdgeOption> getAll() {
-		List<EdgeOption> all = mapper.scan(EdgeOption.class, new DynamoDBScanExpression());
+	public List<SeatOption> getAll() {
+		List<SeatOption> all = mapper.scan(SeatOption.class, new DynamoDBScanExpression());
 		return all;
 
 	}
 	
 	
-	public void update(EdgeOption p) {
+	public void update(SeatOption p) {
 		try {
 			mapper.save(p, buildDynamoDBSaveExpression(p));
 		} catch (ConditionalCheckFailedException e) {
@@ -48,14 +47,14 @@ public class EdgeOptionRepository {
 		}
 	}
 	
-	public void delete(EdgeOption p) {
+	public void delete(SeatOption p) {
 		mapper.delete(p);
 	}
 	
-	public DynamoDBSaveExpression buildDynamoDBSaveExpression(EdgeOption p ) {
+	public DynamoDBSaveExpression buildDynamoDBSaveExpression(SeatOption p ) {
 		DynamoDBSaveExpression exp = new DynamoDBSaveExpression();
 		Map<String , ExpectedAttributeValue> expected = new HashMap<>();
-		expected.put("edge", new ExpectedAttributeValue(new AttributeValue(p.getEdge())).withComparisonOperator(ComparisonOperator.EQ));
+		expected.put("seat", new ExpectedAttributeValue(new AttributeValue(p.getSeat())).withComparisonOperator(ComparisonOperator.EQ));
 		exp.setExpected(expected);
 		return exp;
 	}

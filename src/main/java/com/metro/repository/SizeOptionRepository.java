@@ -35,7 +35,7 @@ public class SizeOptionRepository {
 	
 
 	public List<SizeOption> getAll() {
-		List<SizeOption> all = mapper.parallelScan(SizeOption.class, new DynamoDBScanExpression(), 2);
+		List<SizeOption> all = mapper.scan(SizeOption.class, new DynamoDBScanExpression());
 		return all;
 
 	}
