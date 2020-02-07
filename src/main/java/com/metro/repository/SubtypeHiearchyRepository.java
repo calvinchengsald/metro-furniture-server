@@ -33,7 +33,7 @@ public class SubtypeHiearchyRepository {
 	
 
 	public List<SubtypeHiearchy> getAll() {
-		List<SubtypeHiearchy> all = mapper.parallelScan(SubtypeHiearchy.class, new DynamoDBScanExpression(), 2);
+		List<SubtypeHiearchy> all = mapper.scan(SubtypeHiearchy.class, new DynamoDBScanExpression());
 		return all;
 
 	}

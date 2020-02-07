@@ -34,7 +34,7 @@ public class TypeHiearchyRepository {
 	
 
 	public List<TypeHiearchy> getAll() {
-		List<TypeHiearchy> all = mapper.parallelScan(TypeHiearchy.class, new DynamoDBScanExpression(), 2);
+		List<TypeHiearchy> all = mapper.scan(TypeHiearchy.class, new DynamoDBScanExpression());
 		return all;
 
 	}
