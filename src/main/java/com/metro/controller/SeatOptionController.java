@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,42 +15,40 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.metro.model.EdgeOption;
-import com.metro.model.SubtypeHiearchy;
-import com.metro.repository.SubtypeHiearchyRepository;
+import com.metro.model.SeatOption;
+import com.metro.repository.SeatOptionRepository;
 
 @RestController
-@RequestMapping("/subSubtypeHiearchy")
-@CrossOrigin(origins = "http://localhost:3000")
-public class SubtypeHiearchyController {
+@RequestMapping("/seatoption")
+public class SeatOptionController {
 
 	@Autowired
-	private SubtypeHiearchyRepository repository;
+	private SeatOptionRepository repository;
 
 
 	@PostMapping
-	public String insertIntoDynamoDB(@RequestBody SubtypeHiearchy p) {
+	public String insertIntoDynamoDB(@RequestBody SeatOption p) {
 		repository.insert(p);
 		return "Succuess in inserting";
 	}
     
 
 	@GetMapping
-	public ResponseEntity<SubtypeHiearchy> getOneSubtypeHiearchyDetails(@RequestParam String edge) {
-		SubtypeHiearchy p = repository.getOneBySubtype(edge);
-		return new ResponseEntity<SubtypeHiearchy>(p, HttpStatus.OK);
+	public ResponseEntity<SeatOption> getOneSeatOptionDetails(@RequestParam String edge) {
+		SeatOption p = repository.getOneBySeat(edge);
+		return new ResponseEntity<SeatOption>(p, HttpStatus.OK);
 	}
 	
 	@DeleteMapping(value = "{subtype}")
-	public void deleteSubtypeHiearchy(@PathVariable("subtype") String subtype) {
-		repository.delete(SubtypeHiearchy.createSubtypeHiearchy(subtype));
+	public void deleteSeatOption(@PathVariable("subtype") String subtype) {
+		repository.delete(SeatOption.createSeatOption(subtype));
 	}
     
 
 	@GetMapping(value = "/all")
-	public ResponseEntity<List<SubtypeHiearchy>> getAll() {
-		List<SubtypeHiearchy> p = repository.getAll();
-		return new ResponseEntity<List<SubtypeHiearchy>>(p, HttpStatus.OK);
+	public ResponseEntity<List<SeatOption>> getAll() {
+		List<SeatOption> p = repository.getAll();
+		return new ResponseEntity<List<SeatOption>>(p, HttpStatus.OK);
 	}
-
  
 }

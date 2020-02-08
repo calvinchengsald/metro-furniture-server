@@ -51,5 +51,30 @@ public class GeneralController {
 		List<ProductInfo> p = repository.getAll();
 		return new ResponseEntity<List<ProductInfo>>(p, HttpStatus.OK);
 	}
+	
+
+	@GetMapping(value = "/m_type")
+	public ResponseEntity<List<ProductInfo>> getAllType(@RequestParam String value) {
+		List<ProductInfo> p = repository.getAllByAttr("m_type", value);
+		return new ResponseEntity<List<ProductInfo>>(p, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/m_subtype")
+	public ResponseEntity<List<ProductInfo>> getAllSubtype(@RequestParam String value) {
+		List<ProductInfo> p = repository.getAllByAttr("m_subtype", value);
+		return new ResponseEntity<List<ProductInfo>>(p, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/base_code")
+	public ResponseEntity<List<ProductInfo>> getAllBase_code(@RequestParam String value) {
+		List<ProductInfo> p = repository.getAllByAttr("base_code", value);
+		return new ResponseEntity<List<ProductInfo>>(p, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/tag")
+	public ResponseEntity<List<ProductInfo>> getAllTag(@RequestParam String value) {
+		List<ProductInfo> p = repository.getAllByAttrList("tag", value);
+		return new ResponseEntity<List<ProductInfo>>(p, HttpStatus.OK);
+	}
  
 }

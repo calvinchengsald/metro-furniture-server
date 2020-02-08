@@ -10,15 +10,19 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 @DynamoDBTable(tableName = "ProductInfo")
 public class ProductInfo implements Serializable{
 	private static final long serialVersionUID = 1L;
-	private String item_code;
+	private String item_code; 		// combination of base code and size  --  UVCT-2424   - will be unique to determine the price for this item
+									// UVCT1-2424  / WC101 (no need for sizing here)
+	private String base_code;		// UVCT1 / ELT10 / VWT12 / WC101         filtering here should have multiple size and color options
     private String notes;
     private String cost;
     private String thickness;
-    private String type;
-    private String subtype;
+    private String m_type;		//chair / table / base
+    private String m_subtype;		// metal barstool / formica / beechwood     
     private List<String> tag;
-    private List<String> size_option;
+    private String m_size;			// price dependant
+    private List<Color> color;		// not price dependant, will effect picture url
     private List<String> edge_option;
+    private List<SeatOption> seat_option;
  
     
     public static ProductInfo createProductInfo(String item_code){
@@ -37,8 +41,18 @@ public class ProductInfo implements Serializable{
         return cost;
     }
 
+    
 
-    @DynamoDBAttribute
+	@DynamoDBAttribute
+    public String getBase_code() {
+		return base_code;
+	}
+
+	public void setBase_code(String base_code) {
+		this.base_code = base_code;
+	}
+
+	@DynamoDBAttribute
 	public String getNotes() {
 		return notes;
 	}
@@ -56,14 +70,6 @@ public class ProductInfo implements Serializable{
 		this.thickness = thickness;
 	}
 
-    @DynamoDBAttribute
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
 
     @DynamoDBAttribute
 	public List<String> getTag() {
@@ -74,14 +80,6 @@ public class ProductInfo implements Serializable{
 		this.tag = tag;
 	}
 
-    @DynamoDBAttribute
-	public List<String> getSize_option() {
-		return size_option;
-	}
-
-	public void setSize_option(List<String> size_option) {
-		this.size_option = size_option;
-	}
 
     @DynamoDBAttribute
 	public List<String> getEdge_option() {
@@ -102,14 +100,53 @@ public class ProductInfo implements Serializable{
 	}
 
     @DynamoDBAttribute
-	public String getSubtype() {
-		return subtype;
+	public List<Color> getColor() {
+		return color;
 	}
 
-	public void setSubtype(String subtype) {
-		this.subtype = subtype;
+	public void setColor(List<Color> color) {
+		this.color = color;
 	}
-	
+
+
+    @DynamoDBAttribute
+	public List<SeatOption> getSeat_option() {
+		return seat_option;
+	}
+
+	public void setSeat_option(List<SeatOption> seat_option) {
+		this.seat_option = seat_option;
+	}
+
+    @DynamoDBAttribute
+	public String getM_type() {
+		return m_type;
+	}
+
+	public void setM_type(String m_type) {
+		this.m_type = m_type;
+	}
+
+    @DynamoDBAttribute
+	public String getM_subtype() {
+		return m_subtype;
+	}
+
+	public void setM_subtype(String m_subtype) {
+		this.m_subtype = m_subtype;
+	}
+
+    @DynamoDBAttribute
+	public String getM_size() {
+		return m_size;
+	}
+
+	public void setM_size(String m_size) {
+		this.m_size = m_size;
+	}
+
+
+    
 	
 
 }

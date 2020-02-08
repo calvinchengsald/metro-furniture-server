@@ -36,10 +36,30 @@ public class ProductInfoRepository {
 	
 
 	public List<ProductInfo> getAll() {
-		List<ProductInfo> all = mapper.parallelScan(ProductInfo.class, new DynamoDBScanExpression(), 2);
+		List<ProductInfo> all = mapper.scan(ProductInfo.class, new DynamoDBScanExpression());
 		return all;
 
 	}
+
+	public List<ProductInfo> getAllByAttr(String attr, String attrVal) {
+		Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+        eav.put(":val1", new AttributeValue().withS(attrVal));
+
+        DynamoDBScanExpression queryExpression = new DynamoDBScanExpression().withFilterExpression(attr+" = :val1").withExpressionAttributeValues(eav);
+        List<ProductInfo> productInfos = mapper.scan(ProductInfo.class, queryExpression);
+		return productInfos;
+	}
+
+	public List<ProductInfo> getAllByAttrList(String attr, String attrVal) {
+		Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+        eav.put(":val1", new AttributeValue().withS(attrVal));
+
+        DynamoDBScanExpression queryExpression = new DynamoDBScanExpression().withFilterExpression( "contains(" + attr+", :val1) ").withExpressionAttributeValues(eav);
+        List<ProductInfo> productInfos = mapper.scan(ProductInfo.class, queryExpression);
+		return productInfos;
+	}
+	
+
 	
 	
 	public void update(ProductInfo p) {
