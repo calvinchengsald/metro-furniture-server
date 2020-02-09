@@ -15,6 +15,7 @@ import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.metro.exception.DatabaseExceptions;
+import com.metro.exception.ItemAlreadyExistsException;
 import com.metro.exception.UndefinedItemCodeException;
 import com.metro.model.ProductInfo;
 import com.metro.utils.Standardization;
@@ -28,7 +29,13 @@ public class ProductInfoRepository {
 	
 	public void insert(ProductInfo p) throws DatabaseExceptions {
 
-		if(Standardization.isInvalidString(p.getItem_code())) { throw new UndefinedItemCodeException("Unable to process item with invalid item_code: [" +p.getItem_code() + "]" );}
+		if(Standardization.isInvalidString(p.getItem_code())) { 
+			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getItem_code() + "]" );
+		}
+		if (mapper.load(ProductInfo.class, p.getItem_code()) != null) {
+			throw new ItemAlreadyExistsException("Item Code : [" +p.getItem_code() + " already exists in the database. Please use a different item code" );
+		}
+		
 		mapper.save(p);
 	}
 	
@@ -64,7 +71,10 @@ public class ProductInfoRepository {
 
 	
 	
-	public void update(ProductInfo p) {
+	public void update(ProductInfo p) throws  DatabaseExceptions{
+		if(Standardization.isInvalidString(p.getItem_code())) { 
+			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getItem_code() + "]" );
+		}
 		try {
 			mapper.save(p, buildDynamoDBSaveExpression(p));
 		} catch (ConditionalCheckFailedException e) {

@@ -49,53 +49,63 @@ public class GeneralController {
 	
 
 	@PostMapping(value= "/update")
-	public ResponseEntity<ProductInfo> updateDynamoDB(@RequestBody ProductInfo p) {
-		repository.update(p);
-		return new ResponseEntity<ProductInfo>(p, HttpStatus.OK);
+	public ResponseEntity<ApiResponse<ProductInfo>> updateDynamoDB(@RequestBody ProductInfo p) {
+		try {
+			repository.update(p);
+			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.OK, ""),HttpStatus.OK);
+		} catch (DatabaseExceptions e ) {
+			if (e.getClass().equals(ItemAlreadyExistsException.class)){
+				return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.BAD_REQUEST, "An item with this item code: [" +p.getItem_code() + "] already exists"),HttpStatus.BAD_REQUEST);
+			}
+			
+			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
+		}
 	}
     
 
 	@GetMapping
-	public ResponseEntity<ProductInfo> getOneProductInfoDetails(@RequestParam String item_code) {
+	public ResponseEntity<ApiResponse<ProductInfo>> getOneProductInfoDetails(@RequestParam String item_code) {
 		ProductInfo p = repository.getOneByItemCode(item_code);
-		return new ResponseEntity<ProductInfo>(p, HttpStatus.OK);
+		return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.OK, ""),HttpStatus.OK);
 	}
 	
-	@DeleteMapping(value = "{item_code}")
-	public void deleteProductInfo(@PathVariable("item_code") String item_code) {
-		repository.delete(ProductInfo.createProductInfo(item_code));
+	@PostMapping(value = "/delete")
+	public ResponseEntity<ApiResponse<ProductInfo>> deleteProductInfo(@RequestBody ProductInfo p) {
+		System.out.println("Entering delete with product: " + p.toString());
+		repository.delete(p);
+		return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.OK, ""),HttpStatus.OK);
 	}
     
 
 	@GetMapping(value = "/all")
-	public ResponseEntity<List<ProductInfo>> getAll() {
+	public  ResponseEntity<ApiResponse<List<ProductInfo>>> getAll() {
 		List<ProductInfo> p = repository.getAll();
-		return new ResponseEntity<List<ProductInfo>>(p, HttpStatus.OK);
+		return new ResponseEntity<ApiResponse<List<ProductInfo>>>(new ApiResponse<List<ProductInfo>>(p,HttpStatus.OK, ""),HttpStatus.OK);
 	}
 	
 
 	@GetMapping(value = "/m_type")
-	public ResponseEntity<List<ProductInfo>> getAllType(@RequestParam String value) {
+	public ResponseEntity<ApiResponse<List<ProductInfo>>> getAllType(@RequestParam String value) {
 		List<ProductInfo> p = repository.getAllByAttr("m_type", value);
-		return new ResponseEntity<List<ProductInfo>>(p, HttpStatus.OK);
+		return new ResponseEntity<ApiResponse<List<ProductInfo>>>(new ApiResponse<List<ProductInfo>>(p,HttpStatus.OK, ""),HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/m_subtype")
-	public ResponseEntity<List<ProductInfo>> getAllSubtype(@RequestParam String value) {
+	public ResponseEntity<ApiResponse<List<ProductInfo>>> getAllSubtype(@RequestParam String value) {
 		List<ProductInfo> p = repository.getAllByAttr("m_subtype", value);
-		return new ResponseEntity<List<ProductInfo>>(p, HttpStatus.OK);
+		return new ResponseEntity<ApiResponse<List<ProductInfo>>>(new ApiResponse<List<ProductInfo>>(p,HttpStatus.OK, ""),HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/base_code")
-	public ResponseEntity<List<ProductInfo>> getAllBase_code(@RequestParam String value) {
+	public ResponseEntity<ApiResponse<List<ProductInfo>>> getAllBase_code(@RequestParam String value) {
 		List<ProductInfo> p = repository.getAllByAttr("base_code", value);
-		return new ResponseEntity<List<ProductInfo>>(p, HttpStatus.OK);
+		return new ResponseEntity<ApiResponse<List<ProductInfo>>>(new ApiResponse<List<ProductInfo>>(p,HttpStatus.OK, ""),HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/tag")
-	public ResponseEntity<List<ProductInfo>> getAllTag(@RequestParam String value) {
+	public ResponseEntity<ApiResponse<List<ProductInfo>>> getAllTag(@RequestParam String value) {
 		List<ProductInfo> p = repository.getAllByAttrList("tag", value);
-		return new ResponseEntity<List<ProductInfo>>(p, HttpStatus.OK);
+		return new ResponseEntity<ApiResponse<List<ProductInfo>>>(new ApiResponse<List<ProductInfo>>(p,HttpStatus.OK, ""),HttpStatus.OK);
 	}
  
 }
