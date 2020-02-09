@@ -8,16 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedQueryList;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
-import com.metro.model.EdgeOption;
+import com.metro.exception.DatabaseExceptions;
+import com.metro.exception.UndefinedItemCodeException;
 import com.metro.model.ProductInfo;
+import com.metro.utils.Standardization;
 
 @Repository
 public class ProductInfoRepository {
@@ -26,7 +26,9 @@ public class ProductInfoRepository {
 	@Autowired
 	private DynamoDBMapper mapper;
 	
-	public void insert(ProductInfo p) {
+	public void insert(ProductInfo p) throws DatabaseExceptions {
+
+		if(Standardization.isInvalidString(p.getItem_code())) { throw new UndefinedItemCodeException("Unable to process item with invalid item_code: [" +p.getItem_code() + "]" );}
 		mapper.save(p);
 	}
 	

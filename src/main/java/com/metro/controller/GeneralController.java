@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.metro.entities.ApiResponse;
+import com.metro.exception.DatabaseExceptions;
+import com.metro.exception.ItemAlreadyExistsException;
+import com.metro.exception.UndefinedItemCodeException;
 import com.metro.model.ProductInfo;
 import com.metro.repository.ProductInfoRepository;
 
@@ -28,9 +32,26 @@ public class GeneralController {
 
 
 	@PostMapping
-	public String insertIntoDynamoDB(@RequestBody ProductInfo p) {
-		repository.insert(p);
-		return "Succuess in inserting";
+	public ResponseEntity<ApiResponse<ProductInfo>> insertIntoDynamoDB(@RequestBody ProductInfo p) {
+		try {
+			repository.insert(p);
+			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.OK, ""),HttpStatus.OK);
+		} catch (DatabaseExceptions e ) {
+			if (e.getClass().equals(ItemAlreadyExistsException.class)){
+				return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.BAD_REQUEST, "An item with this item code: [" +p.getItem_code() + "] already exists"),HttpStatus.BAD_REQUEST);
+			}
+			
+			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
+		}
+		
+		
+	}
+	
+
+	@PostMapping(value= "/update")
+	public ResponseEntity<ProductInfo> updateDynamoDB(@RequestBody ProductInfo p) {
+		repository.update(p);
+		return new ResponseEntity<ProductInfo>(p, HttpStatus.OK);
 	}
     
 
