@@ -23,7 +23,7 @@ public class SizeOption implements Serializable {
     	return p;
     }
     
-    
+
     @DynamoDBHashKey
 	public String getSize() {
 		return size;

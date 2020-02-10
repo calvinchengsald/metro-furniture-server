@@ -14,7 +14,13 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
+import com.metro.exception.DatabaseExceptions;
+import com.metro.exception.ItemAlreadyExistsException;
+import com.metro.exception.UndefinedItemCodeException;
+import com.metro.model.ProductInfo;
 import com.metro.model.SubtypeHiearchy;
+import com.metro.model.TypeHiearchy;
+import com.metro.utils.Standardization;
 
 @Repository
 public class SubtypeHiearchyRepository {
@@ -23,9 +29,18 @@ public class SubtypeHiearchyRepository {
 	@Autowired
 	private DynamoDBMapper mapper;
 	
-	public void insert(SubtypeHiearchy p) {
+	public void insert(SubtypeHiearchy p) throws DatabaseExceptions {
+
+		if(Standardization.isInvalidString(p.getSubtype())) { 
+			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getSubtype() + "]" );
+		}
+		if (mapper.load(ProductInfo.class, p.getSubtype()) != null) {
+			throw new ItemAlreadyExistsException("Item Code : [" +p.getSubtype() + " already exists in the database. Please use a different item code" );
+		}
+		
 		mapper.save(p);
 	}
+	
 	
 	public SubtypeHiearchy getOneBySubtype(String edge) {
 		return mapper.load(SubtypeHiearchy.class, edge);
@@ -39,13 +54,17 @@ public class SubtypeHiearchyRepository {
 	}
 	
 	
-	public void update(SubtypeHiearchy p) {
+	public void update(SubtypeHiearchy p) throws  DatabaseExceptions{
+		if(Standardization.isInvalidString(p.getSubtype())) { 
+			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getSubtype() + "]" );
+		}
 		try {
 			mapper.save(p, buildDynamoDBSaveExpression(p));
 		} catch (ConditionalCheckFailedException e) {
 			System.out.println("invalid data - " + e.getMessage());
 		}
 	}
+	
 	
 	public void delete(SubtypeHiearchy p) {
 		mapper.delete(p);

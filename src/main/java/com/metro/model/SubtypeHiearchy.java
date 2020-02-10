@@ -40,7 +40,7 @@ public class SubtypeHiearchy implements Serializable {
 
 
 
-    @DynamoDBHashKey
+	@DynamoDBAttribute
 	public String getDescription() {
 		return description;
 	}
@@ -53,7 +53,7 @@ public class SubtypeHiearchy implements Serializable {
 
 
 
-    @DynamoDBHashKey
+	@DynamoDBAttribute
 	public String getUrl() {
 		return url;
 	}

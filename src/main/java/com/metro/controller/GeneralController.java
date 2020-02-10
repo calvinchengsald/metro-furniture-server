@@ -71,7 +71,6 @@ public class GeneralController {
 	
 	@PostMapping(value = "/delete")
 	public ResponseEntity<ApiResponse<ProductInfo>> deleteProductInfo(@RequestBody ProductInfo p) {
-		System.out.println("Entering delete with product: " + p.toString());
 		repository.delete(p);
 		return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.OK, ""),HttpStatus.OK);
 	}

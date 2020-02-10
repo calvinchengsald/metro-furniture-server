@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.metro.entities.ApiResponse;
+import com.metro.exception.DatabaseExceptions;
+import com.metro.exception.ItemAlreadyExistsException;
+import com.metro.model.ProductInfo;
 import com.metro.model.TypeHiearchy;
 import com.metro.repository.TypeHiearchyRepository;
 
@@ -27,28 +32,57 @@ public class TypeHiearchyController {
 
 
 	@PostMapping
-	public String insertIntoDynamoDB(@RequestBody TypeHiearchy p) {
-		repository.insert(p);
-		return "Succuess in inserting";
-	}
-    
-
-	@GetMapping
-	public ResponseEntity<TypeHiearchy> getOneTypeHiearchyDetails(@RequestParam String edge) {
-		TypeHiearchy p = repository.getOneByType(edge);
-		return new ResponseEntity<TypeHiearchy>(p, HttpStatus.OK);
+	public ResponseEntity<ApiResponse<TypeHiearchy>> insertIntoDynamoDB(@RequestBody TypeHiearchy p) {
+		try {
+			repository.insert(p);
+			return new ResponseEntity<ApiResponse<TypeHiearchy>>(new ApiResponse<TypeHiearchy>(p,HttpStatus.OK, ""),HttpStatus.OK);
+		} catch (DatabaseExceptions e ) {
+			if (e.getClass().equals(ItemAlreadyExistsException.class)){
+				return new ResponseEntity<ApiResponse<TypeHiearchy>>(new ApiResponse<TypeHiearchy>(p,HttpStatus.BAD_REQUEST, "An item with this item code: [" +p.getM_type() + "] already exists"),HttpStatus.BAD_REQUEST);
+			}
+			
+			return new ResponseEntity<ApiResponse<TypeHiearchy>>(new ApiResponse<TypeHiearchy>(p,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
+		}
+		
+		
 	}
 	
-	@DeleteMapping(value = "{subtype}")
-	public void deleteTypeHiearchy(@PathVariable("subtype") String subtype) {
-		repository.delete(TypeHiearchy.createTypeHiearchy(subtype));
+
+
+	@GetMapping
+	public ResponseEntity<ApiResponse<TypeHiearchy>> getOneProductInfoDetails(@RequestParam String item_code) {
+		TypeHiearchy p = repository.getOneByType(item_code);
+		return new ResponseEntity<ApiResponse<TypeHiearchy>>(new ApiResponse<TypeHiearchy>(p,HttpStatus.OK, ""),HttpStatus.OK);
+	}
+	
+	
+	@PostMapping(value = "/delete")
+	public ResponseEntity<ApiResponse<TypeHiearchy>> deleteProductInfo(@RequestBody TypeHiearchy p) {
+		repository.delete(p);
+		return new ResponseEntity<ApiResponse<TypeHiearchy>>(new ApiResponse<TypeHiearchy>(p,HttpStatus.OK, ""),HttpStatus.OK);
 	}
     
 
+
+	@PostMapping(value= "/update")
+	public ResponseEntity<ApiResponse<TypeHiearchy>> updateDynamoDB(@RequestBody TypeHiearchy p) {
+		try {
+			repository.update(p);
+			return new ResponseEntity<ApiResponse<TypeHiearchy>>(new ApiResponse<TypeHiearchy>(p,HttpStatus.OK, ""),HttpStatus.OK);
+		} catch (DatabaseExceptions e ) {
+			if (e.getClass().equals(ItemAlreadyExistsException.class)){
+				return new ResponseEntity<ApiResponse<TypeHiearchy>>(new ApiResponse<TypeHiearchy>(p,HttpStatus.BAD_REQUEST, "An item with this item code: [" +p.getM_type() + "] already exists"),HttpStatus.BAD_REQUEST);
+			}
+			
+			return new ResponseEntity<ApiResponse<TypeHiearchy>>(new ApiResponse<TypeHiearchy>(p,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
+		}
+	}
+
+
 	@GetMapping(value = "/all")
-	public ResponseEntity<List<TypeHiearchy>> getAll() {
+	public  ResponseEntity<ApiResponse<List<TypeHiearchy>>> getAll() {
 		List<TypeHiearchy> p = repository.getAll();
-		return new ResponseEntity<List<TypeHiearchy>>(p, HttpStatus.OK);
+		return new ResponseEntity<ApiResponse<List<TypeHiearchy>>>(new ApiResponse<List<TypeHiearchy>>(p,HttpStatus.OK, ""),HttpStatus.OK);
 	}
  
 }

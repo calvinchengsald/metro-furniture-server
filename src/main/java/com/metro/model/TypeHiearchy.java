@@ -12,72 +12,85 @@ public class TypeHiearchy implements Serializable {
 
 	
 	private static final long serialVersionUID = 2119134097011967738L;
-	private String type;
-	private List<SubtypeHiearchy> subtype;
-	private String description;
-	private String url;
+	private String m_type;
+	private List<String> subtype;
+	private String m_description;
+	private String m_url;
 	
 
 
     public static TypeHiearchy createTypeHiearchy(String size){
     	TypeHiearchy p = new TypeHiearchy();
-    	p.setType(size);
+    	p.setM_type(size);
     	return p;
     }
 
 
 
     @DynamoDBHashKey
-	public String getType() {
-		return type;
+	public String getM_type() {
+		return m_type;
 	}
 
 
 
-	public void setType(String type) {
-		this.type = type;
+	public void setM_type(String m_type) {
+		this.m_type = m_type;
 	}
 
 
 
-    @DynamoDBHashKey
-	public List<SubtypeHiearchy> getSubtype() {
+
+	@DynamoDBAttribute
+	public List<String> getSubtype() {
 		return subtype;
 	}
 
 
 
-	public void setSubtype(List<SubtypeHiearchy> subtype) {
+	public void setSubtype(List<String> subtype) {
 		this.subtype = subtype;
 	}
 
 
 
-    @DynamoDBHashKey
-	public String getDescription() {
-		return description;
+
+	@DynamoDBAttribute
+	public String getM_description() {
+		return m_description;
 	}
 
 
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setM_description(String m_description) {
+		this.m_description = m_description;
 	}
 
 
 
-    @DynamoDBHashKey
-	public String getUrl() {
-		return url;
+
+	@DynamoDBAttribute
+	public String getM_url() {
+		return m_url;
 	}
 
 
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setM_url(String m_url) {
+		this.m_url = m_url;
 	}
+
+
+
+	@Override
+	public String toString() {
+		return "TypeHiearchy [m_type=" + m_type + ", subtype=" + subtype + ", m_description=" + m_description
+				+ ", m_url=" + m_url + "]";
+	}
+
+
     
-    
+	
 	
 	
 }
