@@ -31,11 +31,11 @@ public class SubtypeHiearchyRepository {
 	
 	public void insert(SubtypeHiearchy p) throws DatabaseExceptions {
 
-		if(Standardization.isInvalidString(p.getSubtype())) { 
-			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getSubtype() + "]" );
+		if(Standardization.isInvalidString(p.getM_subtype())) { 
+			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getM_subtype() + "]" );
 		}
-		if (mapper.load(ProductInfo.class, p.getSubtype()) != null) {
-			throw new ItemAlreadyExistsException("Item Code : [" +p.getSubtype() + " already exists in the database. Please use a different item code" );
+		if (mapper.load(ProductInfo.class, p.getM_subtype()) != null) {
+			throw new ItemAlreadyExistsException("Item Code : [" +p.getM_subtype() + " already exists in the database. Please use a different item code" );
 		}
 		
 		mapper.save(p);
@@ -55,8 +55,8 @@ public class SubtypeHiearchyRepository {
 	
 	
 	public void update(SubtypeHiearchy p) throws  DatabaseExceptions{
-		if(Standardization.isInvalidString(p.getSubtype())) { 
-			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getSubtype() + "]" );
+		if(Standardization.isInvalidString(p.getM_subtype())) { 
+			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getM_subtype() + "]" );
 		}
 		try {
 			mapper.save(p, buildDynamoDBSaveExpression(p));
@@ -73,7 +73,7 @@ public class SubtypeHiearchyRepository {
 	public DynamoDBSaveExpression buildDynamoDBSaveExpression(SubtypeHiearchy p ) {
 		DynamoDBSaveExpression exp = new DynamoDBSaveExpression();
 		Map<String , ExpectedAttributeValue> expected = new HashMap<>();
-		expected.put("subtype", new ExpectedAttributeValue(new AttributeValue(p.getSubtype())).withComparisonOperator(ComparisonOperator.EQ));
+		expected.put("subtype", new ExpectedAttributeValue(new AttributeValue(p.getM_subtype())).withComparisonOperator(ComparisonOperator.EQ));
 		exp.setExpected(expected);
 		return exp;
 	}

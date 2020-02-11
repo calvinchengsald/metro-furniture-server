@@ -11,59 +11,58 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 public class SubtypeHiearchy implements Serializable {
 
 	private static final long serialVersionUID = -2799150963436786782L;
-	private String subtype;
-	private String description;
-	private String url;
+	private String m_subtype;
+	private String m_description;
+	private String m_url;
 	
 
 
     public static SubtypeHiearchy createSubtypeHiearchy(String size){
     	SubtypeHiearchy p = new SubtypeHiearchy();
-    	p.setSubtype(size);
+    	p.setM_subtype(size);
     	return p;
     }
 
 
 
     @DynamoDBHashKey
-	public String getSubtype() {
-		return subtype;
+	public String getM_subtype() {
+		return m_subtype;
 	}
 
 
 
-	public void setSubtype(String type) {
-		this.subtype = type;
+	public void setM_subtype(String m_subtype) {
+		this.m_subtype = m_subtype;
 	}
 
 
 
-
-
-	@DynamoDBAttribute
-	public String getDescription() {
-		return description;
+    @DynamoDBAttribute
+	public String getM_description() {
+		return m_description;
 	}
 
 
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setM_description(String m_description) {
+		this.m_description = m_description;
 	}
 
 
 
-	@DynamoDBAttribute
-	public String getUrl() {
-		return url;
+    @DynamoDBAttribute
+	public String getM_url() {
+		return m_url;
 	}
 
 
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setM_url(String m_url) {
+		this.m_url = m_url;
 	}
-    
+
+
     
 	
 	

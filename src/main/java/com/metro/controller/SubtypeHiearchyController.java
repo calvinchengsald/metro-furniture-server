@@ -39,7 +39,7 @@ public class SubtypeHiearchyController {
 			return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p,HttpStatus.OK, ""),HttpStatus.OK);
 		} catch (DatabaseExceptions e ) {
 			if (e.getClass().equals(ItemAlreadyExistsException.class)){
-				return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p,HttpStatus.BAD_REQUEST, "An item with this item code: [" +p.getSubtype() + "] already exists"),HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p,HttpStatus.BAD_REQUEST, "An item with this item code: [" +p.getM_subtype() + "] already exists"),HttpStatus.BAD_REQUEST);
 			}
 			
 			return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
@@ -76,7 +76,7 @@ public class SubtypeHiearchyController {
 			return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p,HttpStatus.OK, ""),HttpStatus.OK);
 		} catch (DatabaseExceptions e ) {
 			if (e.getClass().equals(ItemAlreadyExistsException.class)){
-				return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p,HttpStatus.BAD_REQUEST, "An item with this item code: [" +p.getSubtype() + "] already exists"),HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p,HttpStatus.BAD_REQUEST, "An item with this item code: [" +p.getM_subtype() + "] already exists"),HttpStatus.BAD_REQUEST);
 			}
 			
 			return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
