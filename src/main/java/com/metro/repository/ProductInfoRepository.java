@@ -16,8 +16,10 @@ import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.metro.exception.DatabaseExceptions;
 import com.metro.exception.ItemAlreadyExistsException;
+import com.metro.exception.ItemDoesNotExistsException;
 import com.metro.exception.UndefinedItemCodeException;
 import com.metro.model.ProductInfo;
+import com.metro.model.TypeHiearchy;
 import com.metro.utils.Standardization;
 
 @Repository
@@ -70,17 +72,17 @@ public class ProductInfoRepository {
 	
 
 	
-	
+
 	public void update(ProductInfo p) throws  DatabaseExceptions{
 		if(Standardization.isInvalidString(p.getItem_code())) { 
 			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getItem_code() + "]" );
 		}
-		try {
-			mapper.save(p, buildDynamoDBSaveExpression(p));
-		} catch (ConditionalCheckFailedException e) {
-			System.out.println("invalid data - " + e.getMessage());
+		if (mapper.load(ProductInfo.class, p.getItem_code()) == null) {
+			throw new ItemDoesNotExistsException("Item Code : [" +p.getItem_code() + "] does not exists in the database. Please use a different item code" );
 		}
+		mapper.save(p);
 	}
+	
 	
 	public void delete(ProductInfo p) {
 		mapper.delete(p);

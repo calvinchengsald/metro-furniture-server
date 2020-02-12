@@ -12,14 +12,13 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
-import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.metro.exception.DatabaseExceptions;
 import com.metro.exception.ItemAlreadyExistsException;
+import com.metro.exception.ItemDoesNotExistsException;
 import com.metro.exception.UndefinedItemCodeException;
 import com.metro.model.ProductInfo;
 import com.metro.model.SubtypeHiearchy;
-import com.metro.model.TypeHiearchy;
 import com.metro.utils.Standardization;
 
 @Repository
@@ -58,11 +57,10 @@ public class SubtypeHiearchyRepository {
 		if(Standardization.isInvalidString(p.getM_subtype())) { 
 			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getM_subtype() + "]" );
 		}
-		try {
-			mapper.save(p, buildDynamoDBSaveExpression(p));
-		} catch (ConditionalCheckFailedException e) {
-			System.out.println("invalid data - " + e.getMessage());
+		if (mapper.load(SubtypeHiearchy.class, p.getM_subtype()) == null) {
+			throw new ItemDoesNotExistsException("Code : [" +p.getM_subtype() + "] does not exists in the database. Please use a different item code" );
 		}
+		mapper.save(p);
 	}
 	
 	

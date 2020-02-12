@@ -18,10 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.metro.entities.ApiResponse;
 import com.metro.exception.DatabaseExceptions;
 import com.metro.exception.ItemAlreadyExistsException;
+import com.metro.exception.UndefinedItemCodeException;
+import com.metro.model.DeleteUpdateModel;
 import com.metro.model.EdgeOption;
 import com.metro.model.SubtypeHiearchy;
 import com.metro.model.TypeHiearchy;
 import com.metro.repository.SubtypeHiearchyRepository;
+import com.metro.utils.Standardization;
 
 @RestController
 @RequestMapping("/subtypehiearchy")
@@ -71,18 +74,33 @@ public class SubtypeHiearchyController {
 
 	@PostMapping(value= "/update")
 	public ResponseEntity<ApiResponse<SubtypeHiearchy>> updateDynamoDB(@RequestBody SubtypeHiearchy p) {
+		
 		try {
 			repository.update(p);
 			return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p,HttpStatus.OK, ""),HttpStatus.OK);
 		} catch (DatabaseExceptions e ) {
-			if (e.getClass().equals(ItemAlreadyExistsException.class)){
-				return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p,HttpStatus.BAD_REQUEST, "An item with this item code: [" +p.getM_subtype() + "] already exists"),HttpStatus.BAD_REQUEST);
-			}
 			
 			return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
 		}
 	}
 
+
+
+	//Used when you want to change the primary key. Will delete the record with that key and add in a new record
+	@PostMapping(value= "/deleteupdate")
+	public ResponseEntity<ApiResponse<SubtypeHiearchy>> deleteUpdateDynamoDB(@RequestBody DeleteUpdateModel<SubtypeHiearchy> p) {
+		try {
+			if(Standardization.isInvalidString(p.getModel().getM_subtype())) { 
+				throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getModel().getM_subtype() + "]" );
+			}
+			repository.delete( SubtypeHiearchy.createSubtypeHiearchy(p.getPrePrimaryKey()));
+			repository.insert(p.getModel());
+			return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p.getModel(),HttpStatus.OK, ""),HttpStatus.OK);
+		} catch (DatabaseExceptions e ) {
+			
+			return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p.getModel(),HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
+		}
+	}
 	
 	
  
