@@ -17,7 +17,6 @@ import com.metro.exception.DatabaseExceptions;
 import com.metro.exception.ItemAlreadyExistsException;
 import com.metro.exception.ItemDoesNotExistsException;
 import com.metro.exception.UndefinedItemCodeException;
-import com.metro.model.ProductInfo;
 import com.metro.model.SubtypeHiearchy;
 import com.metro.utils.Standardization;
 
@@ -33,7 +32,7 @@ public class SubtypeHiearchyRepository {
 		if(Standardization.isInvalidString(p.getM_subtype())) { 
 			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getM_subtype() + "]" );
 		}
-		if (mapper.load(ProductInfo.class, p.getM_subtype()) != null) {
+		if (mapper.load(SubtypeHiearchy.class, p.getM_subtype()) != null) {
 			throw new ItemAlreadyExistsException("Item Code : [" +p.getM_subtype() + " already exists in the database. Please use a different item code" );
 		}
 		

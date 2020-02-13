@@ -3,6 +3,8 @@ package com.metro.model;
 import java.io.Serializable;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
@@ -39,6 +41,7 @@ public class SubtypeHiearchy implements Serializable {
 
 
     @DynamoDBAttribute
+    @Value("")
 	public String getM_description() {
 		return m_description;
 	}
@@ -52,6 +55,7 @@ public class SubtypeHiearchy implements Serializable {
 
 
     @DynamoDBAttribute
+    @Value("")
 	public String getM_url() {
 		return m_url;
 	}

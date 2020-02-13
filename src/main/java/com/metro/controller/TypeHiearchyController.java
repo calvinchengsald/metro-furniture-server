@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.metro.entities.ApiResponse;
 import com.metro.exception.DatabaseExceptions;
 import com.metro.exception.ItemAlreadyExistsException;
-import com.metro.model.ProductInfo;
+import com.metro.exception.UndefinedItemCodeException;
+import com.metro.model.DeleteUpdateModel;
 import com.metro.model.TypeHiearchy;
 import com.metro.repository.TypeHiearchyRepository;
+import com.metro.utils.Standardization;
 
 @RestController
 @RequestMapping("/typehiearchy")
@@ -77,6 +79,24 @@ public class TypeHiearchyController {
 			return new ResponseEntity<ApiResponse<TypeHiearchy>>(new ApiResponse<TypeHiearchy>(p,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+
+	//Used when you want to change the primary key. Will delete the record with that key and add in a new record
+	@PostMapping(value= "/deleteupdate")
+	public ResponseEntity<ApiResponse<TypeHiearchy>> deleteUpdateDynamoDB(@RequestBody DeleteUpdateModel<TypeHiearchy> p) {
+		try {
+			if(Standardization.isInvalidString(p.getModel().getM_type())) { 
+				throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getModel().getM_type() + "]" );
+			}
+			repository.delete( TypeHiearchy.createTypeHiearchy(p.getPrePrimaryKey()));
+			repository.insert(p.getModel());
+			return new ResponseEntity<ApiResponse<TypeHiearchy>>(new ApiResponse<TypeHiearchy>(p.getModel(),HttpStatus.OK, ""),HttpStatus.OK);
+		} catch (DatabaseExceptions e ) {
+			
+			return new ResponseEntity<ApiResponse<TypeHiearchy>>(new ApiResponse<TypeHiearchy>(p.getModel(),HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 
 
 	@GetMapping(value = "/all")
