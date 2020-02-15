@@ -19,8 +19,10 @@ import com.metro.entities.ApiResponse;
 import com.metro.exception.DatabaseExceptions;
 import com.metro.exception.ItemAlreadyExistsException;
 import com.metro.exception.UndefinedItemCodeException;
+import com.metro.model.DeleteUpdateModel;
 import com.metro.model.ProductInfo;
 import com.metro.repository.ProductInfoRepository;
+import com.metro.utils.Standardization;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -63,6 +65,25 @@ public class GeneralController {
 	}
     
 
+
+
+	//Used when you want to change the primary key. Will delete the record with that key and add in a new record
+	@PostMapping(value= "/deleteupdate")
+	public ResponseEntity<ApiResponse<ProductInfo>> deleteUpdateDynamoDB(@RequestBody DeleteUpdateModel<ProductInfo> p) {
+		try {
+			if(Standardization.isInvalidString(p.getModel().getItem_code())) { 
+				throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getModel().getItem_code() + "]" );
+			}
+			repository.delete( ProductInfo.createProductInfo(p.getPrePrimaryKey()));
+			repository.insert(p.getModel());
+			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p.getModel(),HttpStatus.OK, ""),HttpStatus.OK);
+		} catch (DatabaseExceptions e ) {
+			
+			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p.getModel(),HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	
 	@GetMapping
 	public ResponseEntity<ApiResponse<ProductInfo>> getOneProductInfoDetails(@RequestParam String item_code) {
 		ProductInfo p = repository.getOneByItemCode(item_code);

@@ -35,7 +35,7 @@ public class ProductInfoRepository {
 			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getItem_code() + "]" );
 		}
 		if (mapper.load(ProductInfo.class, p.getItem_code()) != null) {
-			throw new ItemAlreadyExistsException("Item Code : [" +p.getItem_code() + " already exists in the database. Please use a different item code" );
+			throw new ItemAlreadyExistsException("Item Code : [" +p.getItem_code() + "] already exists in the database. Please use a different item code" );
 		}
 		
 		mapper.save(p);

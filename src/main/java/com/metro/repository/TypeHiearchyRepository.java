@@ -36,7 +36,7 @@ public class TypeHiearchyRepository {
 			throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getM_type() + "]" );
 		}
 		if (mapper.load(TypeHiearchy.class, p.getM_type()) != null) {
-			throw new ItemAlreadyExistsException("Item Code : [" +p.getM_type() + " already exists in the database. Please use a different item code" );
+			throw new ItemAlreadyExistsException("Item Code : [" +p.getM_type() + "] already exists in the database. Please use a different item code" );
 		}
 		mapper.save(p);
 	}
