@@ -71,7 +71,10 @@ public class ProductInfoRepository {
 	}
 	
 
-	
+
+	public void batchUpdate( List<ProductInfo> p) {
+		mapper.batchSave(p);
+	}
 
 	public void update(ProductInfo p) throws  DatabaseExceptions{
 		if(Standardization.isInvalidString(p.getItem_code())) { 

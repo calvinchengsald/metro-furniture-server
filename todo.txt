@@ -22,23 +22,26 @@ UI
 	
 	products
 		add color object into request somehow
-		edit certain item
-		edit / submit item box should dissapear or clear after submitted
-		duplicate item to post it
 		filter or sort on some conditions
+		show tags neatly
+		GENERAL STYLING: fields will go WAYYYY over the screen
 		
 	Types
-		CRUD type subtype
-		when delete updating this field, scan all products with old key and change their type to new
 		recent add should change color?
-		new added type has differnt color?
 		
 	Subtype
 		empty string param in request turns into null in database, leads to uncontrolled components
-		when delete updating this field, scan all products with old key and change their subtype to new
-		may not need to delete subtype if type is deleted, can have a no parent row, reset parents
+		color for recent add
+		max size for picture upload?!?!?!
 		
 		
+		
+		
+		// Initialize the Amazon Cognito credentials provider
+AWS.config.region = 'us-west-2'; // Region
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: 'us-west-2:5ebd009c-55a3-49c9-ab8c-98cf27a02ac9',
+});
 		
 		
 		

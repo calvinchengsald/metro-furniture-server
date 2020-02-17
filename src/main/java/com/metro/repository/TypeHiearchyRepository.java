@@ -8,18 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
-import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.metro.exception.DatabaseExceptions;
 import com.metro.exception.ItemAlreadyExistsException;
 import com.metro.exception.ItemDoesNotExistsException;
 import com.metro.exception.UndefinedItemCodeException;
-import com.metro.model.SubtypeHiearchy;
 import com.metro.model.TypeHiearchy;
 import com.metro.utils.Standardization;
 
@@ -69,6 +66,9 @@ public class TypeHiearchyRepository {
 		mapper.save(p);
 	}
 	
+	public void batchUpdate( List<TypeHiearchy> p) {
+		mapper.batchSave(p);
+	}
 	
 	
 	public void delete(TypeHiearchy p) {
@@ -84,5 +84,28 @@ public class TypeHiearchyRepository {
 	}
 	
 	
+
+
+	public List<TypeHiearchy> getAllByAttr(String attr, String attrVal) {
+
+		Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+        eav.put(":val1", new AttributeValue().withS(attrVal));
+
+        DynamoDBScanExpression queryExpression = new DynamoDBScanExpression().withFilterExpression(attr+" = :val1").withExpressionAttributeValues(eav);
+        List<TypeHiearchy> TypeHiearchys = mapper.scan(TypeHiearchy.class, queryExpression);
+		return TypeHiearchys;
+	}
+
+	public List<TypeHiearchy> getAllByAttrList(String attr, String attrVal) {
+		Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+        eav.put(":val1", new AttributeValue().withS(attrVal));
+        DynamoDBScanExpression queryExpression = new DynamoDBScanExpression().withFilterExpression( "contains(" + attr+", :val1) ").withExpressionAttributeValues(eav);
+        List<TypeHiearchy> TypeHiearchys = mapper.scan(TypeHiearchy.class, queryExpression);
+		return TypeHiearchys;
+	}
+	
+	
+	
+
 	
 }

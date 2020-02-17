@@ -13,7 +13,7 @@ public class TypeHiearchy implements Serializable {
 	
 	private static final long serialVersionUID = 2119134097011967738L;
 	private String m_type;
-	private List<String> subtype;
+	private List<String> m_subtype;
 	private String m_description;
 	private String m_url;
 	
@@ -27,6 +27,11 @@ public class TypeHiearchy implements Serializable {
 
 
 
+    public void updateSubypeList (String prevSubtype, String newSubtype) {
+    	m_subtype.remove(prevSubtype);
+    	m_subtype.add(newSubtype);
+    }
+    
     @DynamoDBHashKey
 	public String getM_type() {
 		return m_type;
@@ -41,17 +46,17 @@ public class TypeHiearchy implements Serializable {
 
 
 
+
 	@DynamoDBAttribute
-	public List<String> getSubtype() {
-		return subtype;
+	public List<String> getM_subtype() {
+		return m_subtype;
 	}
 
 
 
-	public void setSubtype(List<String> subtype) {
-		this.subtype = subtype;
+	public void setM_subtype(List<String> m_subtype) {
+		this.m_subtype = m_subtype;
 	}
-
 
 
 
@@ -84,7 +89,7 @@ public class TypeHiearchy implements Serializable {
 
 	@Override
 	public String toString() {
-		return "TypeHiearchy [m_type=" + m_type + ", subtype=" + subtype + ", m_description=" + m_description
+		return "TypeHiearchy [m_type=" + m_type + ", subtype=" + m_subtype + ", m_description=" + m_description
 				+ ", m_url=" + m_url + "]";
 	}
 

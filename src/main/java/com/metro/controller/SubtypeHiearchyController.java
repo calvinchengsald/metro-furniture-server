@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +18,12 @@ import com.metro.exception.DatabaseExceptions;
 import com.metro.exception.ItemAlreadyExistsException;
 import com.metro.exception.UndefinedItemCodeException;
 import com.metro.model.DeleteUpdateModel;
-import com.metro.model.EdgeOption;
+import com.metro.model.ProductInfo;
 import com.metro.model.SubtypeHiearchy;
 import com.metro.model.TypeHiearchy;
+import com.metro.repository.ProductInfoRepository;
 import com.metro.repository.SubtypeHiearchyRepository;
+import com.metro.repository.TypeHiearchyRepository;
 import com.metro.utils.Standardization;
 
 @RestController
@@ -33,6 +33,10 @@ public class SubtypeHiearchyController {
 
 	@Autowired
 	private SubtypeHiearchyRepository repository;
+	@Autowired
+	private TypeHiearchyRepository typeRepository;
+	@Autowired
+	private ProductInfoRepository productInfoRepository;
 
 
 	@PostMapping
@@ -87,6 +91,8 @@ public class SubtypeHiearchyController {
 
 
 	//Used when you want to change the primary key. Will delete the record with that key and add in a new record
+	// will update all types with links to this subtype and use the subype name in their m_subtype array
+	// will update all products with links to this subtype and use the new subtype key
 	@PostMapping(value= "/deleteupdate")
 	public ResponseEntity<ApiResponse<SubtypeHiearchy>> deleteUpdateDynamoDB(@RequestBody DeleteUpdateModel<SubtypeHiearchy> p) {
 		try {
@@ -95,6 +101,22 @@ public class SubtypeHiearchyController {
 			}
 			repository.delete( SubtypeHiearchy.createSubtypeHiearchy(p.getPrePrimaryKey()));
 			repository.insert(p.getModel());
+			
+			//updating types that had existing linkages this this subtype
+			List<TypeHiearchy> needUpdateTypes = typeRepository.getAllByAttrList("m_subtype", p.getPrePrimaryKey());
+			for( TypeHiearchy t : needUpdateTypes) {
+				t.updateSubypeList(p.getPrePrimaryKey(), p.getModel().getM_subtype());
+			}
+			typeRepository.batchUpdate(needUpdateTypes);
+			
+
+			//updating products that had existing linkages this this subtype
+			List<ProductInfo> needUpdateProducts = productInfoRepository.getAllByAttr("m_subtype", p.getPrePrimaryKey());
+			for( ProductInfo t : needUpdateProducts) {
+				t.setM_subtype(p.getModel().getM_subtype());
+			}
+			productInfoRepository.batchUpdate(needUpdateProducts);
+			
 			return new ResponseEntity<ApiResponse<SubtypeHiearchy>>(new ApiResponse<SubtypeHiearchy>(p.getModel(),HttpStatus.OK, ""),HttpStatus.OK);
 		} catch (DatabaseExceptions e ) {
 			

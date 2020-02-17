@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +18,9 @@ import com.metro.exception.DatabaseExceptions;
 import com.metro.exception.ItemAlreadyExistsException;
 import com.metro.exception.UndefinedItemCodeException;
 import com.metro.model.DeleteUpdateModel;
+import com.metro.model.ProductInfo;
 import com.metro.model.TypeHiearchy;
+import com.metro.repository.ProductInfoRepository;
 import com.metro.repository.TypeHiearchyRepository;
 import com.metro.utils.Standardization;
 
@@ -31,6 +31,8 @@ public class TypeHiearchyController {
 
 	@Autowired
 	private TypeHiearchyRepository repository;
+	@Autowired
+	private ProductInfoRepository productInfoRepository;
 
 
 	@PostMapping
@@ -82,6 +84,7 @@ public class TypeHiearchyController {
 	
 
 	//Used when you want to change the primary key. Will delete the record with that key and add in a new record
+	// will update all products with link to this type and use the new type key
 	@PostMapping(value= "/deleteupdate")
 	public ResponseEntity<ApiResponse<TypeHiearchy>> deleteUpdateDynamoDB(@RequestBody DeleteUpdateModel<TypeHiearchy> p) {
 		try {
@@ -90,6 +93,17 @@ public class TypeHiearchyController {
 			}
 			repository.delete( TypeHiearchy.createTypeHiearchy(p.getPrePrimaryKey()));
 			repository.insert(p.getModel());
+			
+
+
+			//updating products that had existing linkages this this subtype
+			List<ProductInfo> needUpdateProducts = productInfoRepository.getAllByAttr("m_type", p.getPrePrimaryKey());
+			for( ProductInfo t : needUpdateProducts) {
+				t.setM_type(p.getModel().getM_type());
+			}
+			productInfoRepository.batchUpdate(needUpdateProducts);
+			
+			
 			return new ResponseEntity<ApiResponse<TypeHiearchy>>(new ApiResponse<TypeHiearchy>(p.getModel(),HttpStatus.OK, ""),HttpStatus.OK);
 		} catch (DatabaseExceptions e ) {
 			
