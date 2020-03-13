@@ -24,9 +24,9 @@ import com.metro.repository.ProductInfoRepository;
 import com.metro.repository.TypeHiearchyRepository;
 import com.metro.utils.Standardization;
 
-@RestController
+@CrossOrigin(origins = {"http://localhost:3000", "http://metro2-furniture-ny.com.s3-website-us-east-1.amazonaws.com"})
+@RestController                             
 @RequestMapping("/typehiearchy")
-@CrossOrigin(origins = "http://localhost:3000")
 public class TypeHiearchyController {
 
 	@Autowired
@@ -35,7 +35,7 @@ public class TypeHiearchyController {
 	private ProductInfoRepository productInfoRepository;
 
 
-	@PostMapping
+	@PostMapping(value = "/insert")
 	public ResponseEntity<ApiResponse<TypeHiearchy>> insertIntoDynamoDB(@RequestBody TypeHiearchy p) {
 		try {
 			repository.insert(p);

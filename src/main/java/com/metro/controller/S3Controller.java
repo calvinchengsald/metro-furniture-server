@@ -23,7 +23,7 @@ import com.metro.model.ProductInfo;
 import com.metro.repository.EdgeOptionRepository;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://metro2-furniture-ny.com.s3-website-us-east-1.amazonaws.com"})
 @RestController
 @RequestMapping("/s3")
 public class S3Controller {

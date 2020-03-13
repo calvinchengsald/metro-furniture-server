@@ -26,9 +26,9 @@ import com.metro.repository.SubtypeHiearchyRepository;
 import com.metro.repository.TypeHiearchyRepository;
 import com.metro.utils.Standardization;
 
+@CrossOrigin(origins = {"http://localhost:3000", "http://metro2-furniture-ny.com.s3-website-us-east-1.amazonaws.com"})
 @RestController
 @RequestMapping("/subtypehiearchy")
-@CrossOrigin(origins = "http://localhost:3000")
 public class SubtypeHiearchyController {
 
 	@Autowired

@@ -11,44 +11,26 @@ aws s3 sync s3://metro.furniture/backend/server-.0.0.1-SNAPSHOT.jar .
 TODO:
 
 
-
-API
-	this item already exist exception	DONE
-	item already deleted exception?     
-	
-
 UI
-	modal error bug?
 	
 	products
-		add color object into request somehow
-		filter or sort on some conditions
-		show tags neatly
 		GENERAL STYLING: fields will go WAYYYY over the screen
-		
+		duplicate
+		way to search more easily, when in the specific product screen should be able to switch product
+		picture show room
+		contact page / location
+		hidden login/logout inventory
 	Types
-		recent add should change color?
+		order priority?
+		type post is cors error ?
+		
 		
 	Subtype
-		empty string param in request turns into null in database, leads to uncontrolled components
-		color for recent add
 		max size for picture upload?!?!?!
 		
-		
-		
-		
-		// Initialize the Amazon Cognito credentials provider
-AWS.config.region = 'us-west-2'; // Region
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: 'us-west-2:5ebd009c-55a3-49c9-ab8c-98cf27a02ac9',
-});
-		
-		
-		
-		
-		
-		
-		
-		
+	defautl type/products? no show when tab to it
+	
+	in information, when first load there is always no products, fail some init
+	Refresh looks like it loses login session? maybe cross origin problem
 		
 		

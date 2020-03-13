@@ -19,8 +19,9 @@ import com.metro.model.EdgeOption;
 import com.metro.repository.EdgeOptionRepository;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
-@RestController
+//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
+@RestController            
 @RequestMapping("/edgeoption")
 public class EdgeOptionController {
 

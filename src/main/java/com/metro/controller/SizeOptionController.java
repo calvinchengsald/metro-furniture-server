@@ -19,8 +19,8 @@ import com.metro.model.EdgeOption;
 import com.metro.model.SizeOption;
 import com.metro.repository.SizeOptionRepository;
 
+@CrossOrigin(origins = {"http://localhost:3000", "http://metro2-furniture-ny.com.s3-website-us-east-1.amazonaws.com"})
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/sizeoption")
 public class SizeOptionController {
 
