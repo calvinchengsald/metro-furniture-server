@@ -19,7 +19,7 @@ import com.metro.model.EdgeOption;
 import com.metro.model.SeatOption;
 import com.metro.repository.SeatOptionRepository;
 
-@CrossOrigin(origins = {"http://localhost:3000", "http://metro2-furniture-ny.com.s3-website-us-east-1.amazonaws.com"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://metro2-furniture-ny.com.s3-website-us-east-1.amazonaws.com", "https://wwww.metrofurnitureny.com"})
 @RestController
 @RequestMapping("/seatoption")
 public class SeatOptionController {

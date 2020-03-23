@@ -26,7 +26,7 @@ import com.metro.utils.Standardization;
 
 //@CrossOrigin(origins = {"http://localhost:3000", "http://metro-furniture-ny.com.s3-website.us-east-2.amazonaws.com"})
 
-@CrossOrigin(origins = {"http://localhost:3000", "http://metro2-furniture-ny.com.s3-website-us-east-1.amazonaws.com"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://metro2-furniture-ny.com.s3-website-us-east-1.amazonaws.com", "https://wwww.metrofurnitureny.com"})
 @RestController
 @RequestMapping("/product")
 public class GeneralController {
